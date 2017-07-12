@@ -49,12 +49,6 @@ module Vaml
       end
     end
 
-    def write(key, value)
-      Vault.with_retries(Vault::HTTPConnectionError) do
-        Vault.logical.write(key, value)
-      end
-    end
-
 
     def write(key, value)
       Vault.with_retries(Vault::HTTPConnectionError) do
