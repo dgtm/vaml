@@ -124,15 +124,15 @@ Vaml::Github.enable_auth(organization)
 Vaml::Github.grant_policy(team_name, policy_name)
 ```
 
-## Using Vault in your Local System
+## Using Vault
 
-OSX
+This gem also contains a `docker/` directory with vault and consul setup for you.
+To start vault on your local system with consul as the backend, clone the repo and run
 
-```
-brew install vault
-vault server --dev
-```
-And Follow the official Vault documentation.
+`cd docker`
+`docker-compose up`
+
+or you can follow the official Vault documentation and install vault
 
 ## Development
 

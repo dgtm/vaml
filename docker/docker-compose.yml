@@ -1,0 +1,34 @@
+version: '3'
+services:
+  consul-base:
+    image: progrium/consul:latest
+    container_name: "consul-base"
+    ports:
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600"
+      - "53:53/udp"
+    command: "-server -bootstrap-expect 1 -ui-dir /ui -bind 0.0.0.0"
+  consul-agent:
+    image: progrium/consul:latest
+    expose:
+      - "8400"
+      - "8500"
+      - "8600"
+    command: "-server -join consul-base -bind 0.0.0.0"
+    depends_on:
+      - consul-base
+  vault:
+    image: "vault"
+    depends_on:
+      - consul-base
+      - consul-agent
+    links:
+      - "consul-base:consul"
+    environment:
+      - VAULT_ADDR=http://vault:8200
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./config:/config
+    command: "vault server -config=/config/vault.hcl -log-level=trace"
