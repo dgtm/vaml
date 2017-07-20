@@ -8,7 +8,9 @@ services:
       - "8500:8500"
       - "8600:8600"
       - "53:53/udp"
-    command: "-server -bootstrap-expect 1 -ui-dir /ui -bind 0.0.0.0"
+    command: "-server -bootstrap-expect 1 -ui-dir /ui -bind 0.0.0.0 -data-dir=/consul-data"
+    volumes:
+      - ./consul-data:/consul-data
   consul-agent:
     image: progrium/consul:latest
     expose:
@@ -20,6 +22,7 @@ services:
       - consul-base
   vault:
     image: "vault"
+    restart: always
     depends_on:
       - consul-base
       - consul-agent
@@ -31,4 +34,5 @@ services:
       - "8200:8200"
     volumes:
       - ./config:/config
+      - ./certbot-data:/etc/letsencrypt
     command: "vault server -config=/config/vault.hcl -log-level=trace"

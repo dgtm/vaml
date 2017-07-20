@@ -1,0 +1,50 @@
+version: '3'
+services:
+  consul-base:
+    image: consul:latest
+    container_name: "consul-base"
+    ports:
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:8600"
+      - "53:53/udp"
+    command: "consul agent -server -bootstrap-expect 1 -ui-dir /ui -bind 0.0.0.0 -data-dir=/consul-data -config-file=/config/consul-config.json"
+    volumes:
+      - ./consul-data:/consul-data:Z
+      - ./config:/config
+    environment:
+      CONSUL_LOCAL_CONFIG: "{'key_file': '/consul/config/privkey1.pem', 'cert_file': '/consul/config/cert1.pem', 'ca_file': '/consul/config/fullchain1.pem', {'ports': {'http': 8501, 'https': 8500}}}"
+  consul-agent:
+    image: consul:latest
+    expose:
+      - "8400"
+      - "8500"
+      - "8600"
+    links:
+      - "consul-base:consul"
+    command: "consul agent -retry-join consul -bind 0.0.0.0 -data-dir=/consul-data"
+    depends_on:
+      - consul-base
+    volumes:
+      - ./consul-data:/consul-data:Z
+    environment:
+      CONSUL_LOCAL_CONFIG: "{'key_file': '/consul/config/privkey1.pem', 'cert_file': '/consul/config/cert1.pem', 'ca_file': '/consul/config/fullchain1.pem'}"
+  vault:
+    image: "vault"
+    #restart: always
+    cap_add:
+      - IPC_LOCK
+    #privileged: true
+    depends_on:
+      - consul-base
+      - consul-agent
+    links:
+      - "consul-base:consul"
+    environment:
+      - VAULT_ADDR=https://encrypt.homify.com:8200
+    ports:
+      - "8200:8200"
+    volumes:
+      - /home/ubuntu/vault-docker/config:/config:rw
+    #privileged: true
+    command: "vault server -config=/config/vault.hcl -log-level=trace"

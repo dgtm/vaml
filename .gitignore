@@ -5,5 +5,6 @@
 /coverage/
 /doc/
 /pkg/
+/docker/consul-data
 /spec/reports/
 /tmp/

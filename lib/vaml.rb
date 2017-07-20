@@ -17,6 +17,7 @@ module Vaml
     def configure(options)
       options[:host] ||= 'http://127.0.0.1:8200'
       options[:token] ||= ENV['VAULT_TOKEN']
+      options[:ssl_verify] ||= false
 
       self.configuration ||= Configuration.new(options)
       yield configuration if block_given?

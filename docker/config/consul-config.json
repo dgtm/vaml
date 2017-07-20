@@ -1,0 +1,5 @@
+{
+  "key_file": "/consul/config/privkey1.pem",
+  "cert_file": "/consul/config/cert1.pem",
+  "ca_file": "/consul/config/fullchain1.pem",
+}
