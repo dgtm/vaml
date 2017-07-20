@@ -6,7 +6,6 @@ require 'vaml/vault_config'
 require 'vaml/configuration'
 require 'vaml/github'
 require 'vaml/railtie' if defined?(Rails)
-require 'pry'
 
 module Vaml
 

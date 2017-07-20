@@ -7,6 +7,7 @@ namespace :vaml do
       raise
     end
     Vaml.configure(host: ENV['VAULT_HOST'], token: ENV['VAULT_TOKEN'])
+    Vaml::Github.auth(ENV['VAULT_TOKEN'])
     Vaml.write_string(key, value)
     puts "the rake task did something"
     exit
@@ -14,6 +15,7 @@ namespace :vaml do
 
   task :read_secret do
     Vaml.configure(host: ENV['VAULT_HOST'], token: ENV['VAULT_TOKEN'])
+    Vaml::Github.auth(ENV['VAULT_TOKEN'])
     puts Vaml.read_string(ARGV[1])
     exit
   end
